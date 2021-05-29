@@ -37,34 +37,57 @@ int main(void)
 {
     TST *t;
     t = newTree();
-
-    char *s;
-    s = "Hello";
-
-    t = put(t, s, 100);
-
-    int a = get(t, s);
-
-    printf("value of %s: %i\n", s, a);
-
-    char *ss = "goodbye";
-    a = get(t, ss);
-    printf("value of %s: %i\n", ss, a);
-
-    t = put(t, s, 500);
-    a = get(t, s);
-    printf("value of %s: %i\n", s, a);
-
-    t = del(t, s);
-    a = get(t, s);
-    printf("value of %s: %i\n", s, a);
-
-    t = delTree(t);
-    if (t != NULL) {
-        printf("Error: tree not succesfully deleted!\n");
+    if (t == NULL) {
+        printf("Error: tree not successfully created in main!\n");
         return 1;
     }
-    return 0;
+
+    int R = 63;
+    char *alph = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'abcdefghijklmnopqrstuvwxyz";
+
+    // create nTrials new strings, associate with random non-negative value < Lim
+    int nTrials = 10;
+    int lim = 100;
+
+    int trueVal;
+    char *s[nTrials];
+    for (int i = 0; i < nTrials; i++) {
+        trueVal = rand() % lim;
+        int len = rand() % 20;
+        printf("The true value is: %i\n", trueVal);
+
+        // create random string
+        s[i] = malloc((len+1) * sizeof(char));
+        for (int j = 0; j < len; j++) {
+            int u = rand() % R;
+            s[i][j] = alph[u];
+        }
+        s[i][len] = '\0';
+
+        // insert into TST
+        put(t, s[i], trueVal);
+
+        // get from TST
+        int gotVal = get(t, s[i]);
+
+        // print result
+        printf("String: %s, Got value: %i, True value: %i\n", s[i], gotVal, trueVal);
+        printf("----------------------------------------------\n");
+    }
+
+    for (int i = 1; i < nTrials; i++) {
+        t = del(t, s[i]);
+    }
+
+    for (int i = 0; i < nTrials; i++) {
+        int gotVal = get(t, s[i]);
+        printf("String: %s, Got value: %i\n", s[i], gotVal);
+    }
+
+    for (int i = 0; i < nTrials; i++) {
+        free(s[i]);
+    }
+    t = delTree(t);
 }
 
 
@@ -182,22 +205,26 @@ node *delRecursive(node *n, char *key, int index)
         n->val = NULL;
     }
 
+
     /* if there are no more nodes down the middle path, check if we can delete this node.
        we can delete the middle node if there are no left or right paths as well as the
        middle path. */
+
     if (n->val == NULL && n->mid == NULL) {
         if (n->left == NULL && n->right == NULL) {
             free(n->c);
             free(n);
             return NULL;
         } else if (n->left == NULL) {
+            node *rightNode = n->right;
             free(n->c);
             free(n);
-            return n->right;
+            return rightNode;
         } else if (n->right == NULL) {
+            node *leftNode = n->left;
             free(n->c);
             free(n);
-            return n->left;
+            return leftNode;
         }
     }
 
@@ -218,7 +245,6 @@ TST *delTree(TST *t)
 void delNode(node *n)
 {
     if (n == NULL) {
-        printf("here too\n");
         return;
     }
 
