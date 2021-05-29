@@ -59,6 +59,11 @@ int main(void)
     printf("value of %s: %i\n", s, a);
 
     t = delTree(t);
+    if (t != NULL) {
+        printf("Error: tree not succesfully deleted!\n");
+        return 1;
+    }
+    return 0;
 }
 
 
