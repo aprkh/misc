@@ -22,6 +22,7 @@ typedef struct TST
 } TST;
 
 // functions for operating on TST
+TST *newTree(void);
 TST *put(TST *t, char *key, int val);
 node *putRecursive(node *n, char *key, int val, int index);
 int get(TST *t, char *key);
@@ -35,7 +36,7 @@ void delNode(node *n);
 int main(void)
 {
     TST *t;
-    t = malloc(sizeof(TST));
+    t = newTree();
 
     char *s;
     s = "Hello";
@@ -67,6 +68,14 @@ int main(void)
 }
 
 
+TST *newTree(void)
+{
+    TST *t = malloc(sizeof(TST));
+    t->root = NULL;
+    return t;
+}
+
+
 TST *put(TST *t, char *key, int val)
 {
     if (key[0] == '\0') {
@@ -77,6 +86,9 @@ TST *put(TST *t, char *key, int val)
         t->root = malloc(sizeof(node));
         t->root->c = NULL;
         t->root->val = NULL;
+        t->root->left = NULL;
+        t->root->mid = NULL;
+        t->root->right = NULL;
     }
     t->root->mid = putRecursive(t->root->mid, key, val, index);
     return t;
@@ -88,6 +100,10 @@ node *putRecursive(node *n, char *key, int val, int index)
     if (n == NULL) {
         n = malloc(sizeof(node));
         n->c = malloc(sizeof(char));
+        n->val = NULL;
+        n->mid = NULL;
+        n->left = NULL;
+        n->right = NULL;
         *(n->c) = key[index];
     }
     if (key[index] < *(n->c)) {
@@ -202,11 +218,13 @@ TST *delTree(TST *t)
 void delNode(node *n)
 {
     if (n == NULL) {
+        printf("here too\n");
         return;
     }
-    delNode(n->left);
-    delNode(n->mid);
-    delNode(n->right);
+
+    if (n->left != NULL) delNode(n->left);
+    if (n->mid != NULL) delNode(n->mid);
+    if (n->right != NULL) delNode(n->right);
 
     free(n->c);
     free(n->val);
