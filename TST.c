@@ -58,6 +58,10 @@ int main(void)
 
         // create random string
         s[i] = malloc((len+1) * sizeof(char));
+        if (s[i] == NULL) {
+            printf("Error creating string!\n");
+            return 1;
+        }
         for (int j = 0; j < len; j++) {
             int u = rand() % R;
             s[i][j] = alph[u];
@@ -94,6 +98,11 @@ int main(void)
 TST *newTree(void)
 {
     TST *t = malloc(sizeof(TST));
+    if (t == NULL) {
+        printf("Error in function newTree:\n");
+        printf("Error: failed to create tree!\n");
+        abort();
+    }
     t->root = NULL;
     return t;
 }
@@ -107,6 +116,11 @@ TST *put(TST *t, char *key, int val)
     int index = 0;
     if (t->root == NULL) {
         t->root = malloc(sizeof(node));
+        if (t->root == NULL) {
+            printf("Error in function put:\n");
+            printf("Error: failed to create node!\n");
+            abort();
+        }
         t->root->c = NULL;
         t->root->val = NULL;
         t->root->left = NULL;
@@ -122,7 +136,17 @@ node *putRecursive(node *n, char *key, int val, int index)
 {
     if (n == NULL) {
         n = malloc(sizeof(node));
+        if (n == NULL) {
+            printf("Error in function putRecursive: \n");
+            printf("Error: failed to create node!\n");
+            abort();
+        }
         n->c = malloc(sizeof(char));
+        if (n->c == NULL) {
+            printf("Error in function putRecursive: \n");
+            printf("Error: failed to allocate memory!\n");
+            abort();
+        }
         n->val = NULL;
         n->mid = NULL;
         n->left = NULL;
@@ -144,6 +168,11 @@ node *putRecursive(node *n, char *key, int val, int index)
     } else {
         if (n->val == NULL) {
             n->val = malloc(sizeof(int));
+            if (n->val == NULL) {
+                printf("Error in function putRecursive:\n");
+                printf("Error: failed to allocate memory for integer!\n");
+                abort();
+            }
         }
         *(n->val) = val;
     }
