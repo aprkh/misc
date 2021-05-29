@@ -1,4 +1,4 @@
-/* C implementation of a Ternary Search Trie with support for
+/* Implementation of a Ternary Search Trie with support for
 insert, delete, and retrieval. Assumes non-negative value -
 outputs -1 for queries not stored in data structure. */
 
@@ -69,7 +69,9 @@ int main(void)
 
 TST *put(TST *t, char *key, int val)
 {
-    if (key[0] == '\0') return t;
+    if (key[0] == '\0') {
+        return t;
+    }
     int index = 0;
     if (t->root == NULL) {
         t->root = malloc(sizeof(node));
@@ -101,7 +103,9 @@ node *putRecursive(node *n, char *key, int val, int index)
         newNode = putRecursive(n->mid, key, val, index+1);
         n->mid = newNode;
     } else {
-        n->val = malloc(sizeof(int));
+        if (n->val == NULL) {
+            n->val = malloc(sizeof(int));
+        }
         *(n->val) = val;
     }
     return n;
@@ -158,6 +162,7 @@ node *delRecursive(node *n, char *key, int index)
     } else if (key[index+1] != '\0') {
         n->mid = delRecursive(n->mid, key, index+1);
     } else {
+        free(n->val);
         n->val = NULL;
     }
 
@@ -166,10 +171,16 @@ node *delRecursive(node *n, char *key, int index)
        middle path. */
     if (n->val == NULL && n->mid == NULL) {
         if (n->left == NULL && n->right == NULL) {
+            free(n->c);
+            free(n);
             return NULL;
         } else if (n->left == NULL) {
+            free(n->c);
+            free(n);
             return n->right;
         } else if (n->right == NULL) {
+            free(n->c);
+            free(n);
             return n->left;
         }
     }
