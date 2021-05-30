@@ -88,6 +88,22 @@ int main(void)
         printf("String: %s, Got value: %i\n", s[i], gotVal);
     }
 
+    char *missingFirst = "ello world";
+    char *hello = "hello world";
+
+    put(t, missingFirst, 123);
+    int gotVal = get(t, &hello[1]);
+
+    printf("String: %s, got value: %i (should be 123)\n", missingFirst, gotVal);
+
+    char *empty = "";
+    put(t, empty, 456);
+    gotVal = get(t, empty);
+
+    printf("Empty string, got value: %i (should be 456)\n", gotVal);
+    t = del(t, "");
+    gotVal = get(t, "");
+    printf("Empty string after deleting, got value: %i (should be -1)\n", gotVal);
     for (int i = 0; i < nTrials; i++) {
         free(s[i]);
     }
@@ -110,9 +126,6 @@ TST *newTree(void)
 
 TST *put(TST *t, char *key, int val)
 {
-    if (key[0] == '\0') {
-        return t;
-    }
     int index = 0;
     if (t->root == NULL) {
         t->root = malloc(sizeof(node));
@@ -127,7 +140,14 @@ TST *put(TST *t, char *key, int val)
         t->root->mid = NULL;
         t->root->right = NULL;
     }
-    t->root->mid = putRecursive(t->root->mid, key, val, index);
+    if (key[0] == '\0') {
+        if (t->root->val == NULL) {
+            t->root->val = malloc(sizeof(int));
+        }
+        *(t->root->val) = val;
+    } else {
+        t->root->mid = putRecursive(t->root->mid, key, val, index);
+    }
     return t;
 }
 
@@ -183,8 +203,15 @@ node *putRecursive(node *n, char *key, int val, int index)
 int get(TST *t, char *key)
 {
     if (t->root == NULL) {
-        printf("Error! Ternary Search Trie is empty!\n");
-        exit(1);
+        return -1;
+    }
+    // handle case of empty string
+    if (key[0] == '\0') {
+        if (t->root->val == NULL) {
+            return -1;
+        } else {
+            return *(t->root->val);
+        }
     }
     int index = 0;
     return getRecursive(t->root->mid, key, index);
@@ -210,6 +237,14 @@ int getRecursive(node *n, char *key, int index)
 /* Delete key from tree */
 TST *del(TST *t, char *key)
 {
+    // handle passage of empty string
+    if (key[0] == '\0') {
+        if (t->root != NULL && t->root->val != NULL) {
+            free(t->root->val);
+            t->root->val = NULL;
+        }
+        return t;
+    }
     int index = 0;
     if (t->root->mid == NULL) {
         return t;
