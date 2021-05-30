@@ -107,6 +107,10 @@ int main(void)
     for (int i = 0; i < nTrials; i++) {
         free(s[i]);
     }
+
+    put(t, "HAZELLE", 123);
+    printf("Value of HAZELLE (should be 123): %i\n", get(t, "HAZELLE"));
+
     t = delTree(t);
 }
 
@@ -229,7 +233,13 @@ int getRecursive(node *n, char *key, int index)
     } else if (key[index+1] != '\0') {
         return getRecursive(n->mid, key, index+1);
     } else {
-        int out = *(n->val);
+        int out;
+        // note that we need to check for short prefixes
+        if (n->val == NULL) {
+            out = -1;
+        } else {
+            out = *(n->val);
+        }
         return out;
     }
 }
