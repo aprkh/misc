@@ -101,7 +101,7 @@ TST *newTree(void)
     if (t == NULL) {
         printf("Error in function newTree:\n");
         printf("Error: failed to create tree!\n");
-        abort();
+        exit(1);
     }
     t->root = NULL;
     return t;
@@ -119,7 +119,7 @@ TST *put(TST *t, char *key, int val)
         if (t->root == NULL) {
             printf("Error in function put:\n");
             printf("Error: failed to create node!\n");
-            abort();
+            exit(1);
         }
         t->root->c = NULL;
         t->root->val = NULL;
@@ -139,13 +139,13 @@ node *putRecursive(node *n, char *key, int val, int index)
         if (n == NULL) {
             printf("Error in function putRecursive: \n");
             printf("Error: failed to create node!\n");
-            abort();
+            exit(1);
         }
         n->c = malloc(sizeof(char));
         if (n->c == NULL) {
             printf("Error in function putRecursive: \n");
             printf("Error: failed to allocate memory!\n");
-            abort();
+            exit(1);
         }
         n->val = NULL;
         n->mid = NULL;
@@ -171,7 +171,7 @@ node *putRecursive(node *n, char *key, int val, int index)
             if (n->val == NULL) {
                 printf("Error in function putRecursive:\n");
                 printf("Error: failed to allocate memory for integer!\n");
-                abort();
+                exit(1);
             }
         }
         *(n->val) = val;
